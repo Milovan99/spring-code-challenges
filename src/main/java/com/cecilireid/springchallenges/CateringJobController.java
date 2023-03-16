@@ -2,12 +2,14 @@ package com.cecilireid.springchallenges;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -50,8 +52,14 @@ public class CateringJobController {
 return cateringJobRepository.save(job);
     }
 
-    public CateringJob updateCateringJob(CateringJob cateringJob, Long id) {
-        return null;
+    @PutMapping("/{id}")
+    public CateringJob updateCateringJob(@RequestBody CateringJob cateringJob,@PathVariable Long id) {
+        if(cateringJobRepository.existsById(id)){
+            cateringJob.setId(id);
+            return cateringJobRepository.save(cateringJob);
+        }else {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+        }
     }
 
     public CateringJob patchCateringJob(Long id, JsonNode json) {

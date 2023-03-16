@@ -62,8 +62,22 @@ return cateringJobRepository.save(job);
         }
     }
 
-    public CateringJob patchCateringJob(Long id, JsonNode json) {
-        return null;
+    @PatchMapping("/{id}")
+    @ResponseBody
+    public CateringJob patchCateringJob(@PathVariable Long id,@RequestBody JsonNode json) {
+        Optional<CateringJob> optionalCateringJob=cateringJobRepository.findById(id);
+        if(optionalCateringJob.isPresent()){
+                CateringJob job = optionalCateringJob.get();
+                JsonNode menu =json.get("menu");
+                if (menu !=null){
+                    job.setMenu(menu.asText());
+                    return cateringJobRepository.save(job);
+                }else {
+                    throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+                }
+
+        }else {
+        }throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
     }
 
     public Mono<String> getSurpriseImage() {

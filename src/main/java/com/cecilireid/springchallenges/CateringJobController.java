@@ -83,4 +83,10 @@ return cateringJobRepository.save(job);
     public Mono<String> getSurpriseImage() {
         return null;
     }
+
+    @ExceptionHandler(HttpClientErrorException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    String handleClientException(){
+        return "Not found please try again";
+    }
 }
